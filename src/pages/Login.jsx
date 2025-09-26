@@ -1,10 +1,11 @@
 import React from 'react'
-import {Login as LoginComponents} from '../components'
+import LoginForm from '../components/Login';
 
 function Login() {
+  console.log("login rendered")
   return (
     <div className='p-8'>
-        <LoginComponents />
+        <LoginForm />
     </div>
   )
 }

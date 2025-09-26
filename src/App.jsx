@@ -19,8 +19,8 @@ function App() {
         dispatch(logout())
       }
     })
-    .finally(setLoading(false))
-  }, [])
+    .finally(()=>setLoading(false))
+  }, [dispatch])
   
   return !loading ? (
     <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
@@ -32,7 +32,7 @@ function App() {
         <Footer />
       </div>
     </div>
-  ) : null
+  ) : <div>Loading...</div>
 }
 
 export default App;
