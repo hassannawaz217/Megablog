@@ -15,27 +15,38 @@ export class Service {
         this.bucket = new Storage(this.client);
     }
 
-    async createPost({ title, slug, content, featuredImage, status, userId }) {
+    /**
+     
+     * @param {Object} param0
+     * @param {string} param0.title
+     * @param {string} param0.slug      
+     * @param {string} param0.content
+     * @param {string} param0.featuredimage 
+     * @param {string} param0.status
+     * @param {string} param0.userid       
+     */
+    async createPost({ title, slug, content, featuredimage, status, userid }) {
         try {
-            
+            const documentId = slug || ID.unique(); 
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
-                slug,
+                documentId,
                 {
                     title,
                     content,
-                    featuredImage,
+                    featuredimage, 
                     status,
-                    userId,
+                    userid
                 }
             );
         } catch (error) {
             console.log("Appwrite service :: createPost :: error", error);
+            throw error;
         }
     }
 
-    async updatePost(slug, { title, content, featuredImage, status }) {
+    async updatePost(slug, { title, content, featuredimage, status }) {
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
@@ -44,12 +55,13 @@ export class Service {
                 {
                     title,
                     content,
-                    featuredImage,
+                    featuredimage,
                     status,
                 }
             );
         } catch (error) {
             console.log("Appwrite service :: updatePost :: error", error);
+            throw error;
         }
     }
 
@@ -95,13 +107,9 @@ export class Service {
         }
     }
 
-    
     // File upload service
-    
-
     async uploadFile(file) {
         try {
-        
             return await this.bucket.createFile(
                 conf.appwriteBucketId,
                 ID.unique(),
@@ -126,12 +134,18 @@ export class Service {
         }
     }
 
-    getFilePreview(fileId) {
-        return this.bucket.getFilePreview(
+    async getFilePreview(fileId) {
+    try {
+        const result = await this.bucket.getFilePreview(
             conf.appwriteBucketId,
             fileId
         );
+        return result.href; // browser me URL ke liye
+    } catch (error) {
+        console.error("Error getting file preview:", error);
+        return null;
     }
+}
 }
 
 const service = new Service();
