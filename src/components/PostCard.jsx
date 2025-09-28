@@ -13,7 +13,7 @@ function PostCard({ $id, title, featuredimage }) {
       }
       try {
         const url = await appwriteService.getFileView(featuredimage);
-        console.log("Image URL:", url);
+        console.log("Image URL:cd m ", url);
         setPreviewUrl(url);   // ✅ url is a plain string
       } catch (err) {
         console.error("Error fetching file:", err);
