@@ -22,7 +22,7 @@ export default function PostForm({ post }) {
   useEffect(() => {
     async function fetchPreview() {
       if (fileId) {
-        const url = await appwriteService.getFilePreview(fileId);
+        const url = await appwriteService.getFileView(fileId);
         setPreviewUrl(url);
       } else {
         setPreviewUrl(null);
@@ -37,17 +37,14 @@ export default function PostForm({ post }) {
       if (!user) return alert("Please login first");
 
       let updatedFileId = fileId;
+if (data.image?.[0]) {
+  const uploadedFile = await appwriteService.uploadFile(data.image[0]);
+  if (!uploadedFile?.$id) return alert("File upload failed!");
+  updatedFileId = uploadedFile.$id;
+  setFileId(updatedFileId);
+  setPreviewUrl(uploadedFile.url); // set preview directly
+}
 
-      if (data.image?.[0]) {
-        const uploadedFile = await appwriteService.uploadFile(data.image[0]);
-        if (!uploadedFile.$id) return alert("File upload failed!");
-        updatedFileId = uploadedFile.$id;
-        setFileId(updatedFileId);
-
-        if (post?.featuredimage) {
-          await appwriteService.deleteFile(post.featuredimage);
-        }
-      }
 
       const postData = {
         title: data.title,

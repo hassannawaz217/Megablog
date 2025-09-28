@@ -7,9 +7,17 @@ function PostCard({ $id, title, featuredimage }) {
 
   useEffect(() => {
     async function fetchPreview() {
-      if (featuredimage) {
-        const url = await appwriteService.getFilePreview(featuredimage);
-        setPreviewUrl(url);
+      if (!featuredimage) {
+        setPreviewUrl(null);
+        return;
+      }
+      try {
+        const url = await appwriteService.getFileView(featuredimage);
+        console.log("Image URL:", url);
+        setPreviewUrl(url);   // ✅ url is a plain string
+      } catch (err) {
+        console.error("Error fetching file:", err);
+        setPreviewUrl(null);
       }
     }
     fetchPreview();
@@ -23,7 +31,7 @@ function PostCard({ $id, title, featuredimage }) {
             <img
               src={previewUrl}
               alt={title}
-              className="rounded-xl w-full h-48 object-cover"
+              className="rounded-xl w-96 h-48 object-cover"
             />
           ) : (
             <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-xl">
